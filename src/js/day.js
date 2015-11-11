@@ -5,7 +5,10 @@ $.widget("confapp.caDay", {
 		database: false,
 		dayTimestamp: false,
 		userData: false,
-		headerTag: "h3"
+		headerTag: "h3",
+		annotationImageDirectory: false,
+		mapImageDirectory: false,
+		imageDirectory: false
 	},
 
 	_create: function() {
@@ -82,7 +85,10 @@ $.widget("confapp.caDay", {
 							startTimestamp: timeSlot.startTimestamp,
 							endTimestamp: timeSlot.endTimestamp,
 							sessions: timeSlot.sessions,
-							totalSimultaneousSessions: totalSimultaneousSessions
+							totalSimultaneousSessions: totalSimultaneousSessions,
+							annotationImageDirectory: this.option('annotationImageDirectory'),
+							mapImageDirectory: this.option('mapImageDirectory'),
+							imageDirectory: this.option('imageDirectory')
 						});
 		}, this));
 

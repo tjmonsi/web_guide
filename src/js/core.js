@@ -3,7 +3,10 @@ $.widget("confapp.caWebProgram", {
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
-		showLogo: false
+		showLogo: false,
+		annotationImageDirectory: 'images/annotations',
+		mapImageDirectory: 'images/maps',
+		imageDirectory: 'images'
 	},
 
 	_create: function() {
@@ -106,21 +109,27 @@ $.widget("confapp.caWebProgram", {
 											});
 
 		if(dayTimestamps) {
-			$.each(dayTimestamps, $.proxy(function(index, dayTimestamp) {
+			each(dayTimestamps, function(dayTimestamp, index) {
 				$("<div />").appendTo(this.daysElement)
 							.caDay({
 								database: database,
 								userData: this.getUserData(),
-								dayTimestamp: dayTimestamp
+								dayTimestamp: dayTimestamp,
+								annotationImageDirectory: addTrailingSlash(this.option('annotationImageDirectory')),
+								mapImageDirectory: addTrailingSlash(this.option('mapImageDirectory')),
+								imageDirectory: addTrailingSlash(this.option('imageDirectory'))
 							});
-			}, this));
+			}, this);
 		} else { // we have data that doesn't have any times set yet. just display everything
 			$("<div />").appendTo(this.daysElement)
 						.caDay({
 							database: database,
 							userData: this.getUserData(),
 							selectedEvent: this.option("selectedEvent"),
-							dayTimestamp: false
+							dayTimestamp: false,
+							annotationImageDirectory: addTrailingSlash(this.option('annotationImageDirectory')),
+							mapImageDirectory: addTrailingSlash(this.option('mapImageDirectory')),
+							imageDirectory: addTrailingSlash(this.option('imageDirectory'))
 						});
 		}
 	},
@@ -145,6 +154,12 @@ $.widget("confapp.caWebProgram", {
 		return this._user_data;
 	}
 });
+
+// http://stackoverflow.com/questions/11531363/javascript-jquery-add-trailing-slash-to-url-if-not-present
+function addTrailingSlash(url) {
+	var lastChar = url.substr(-1); // Selects the last character
+	return (lastChar === '/') ? url : (url + '/');
+}
 
 function getLongWeekdayName(date) {
 	return moment(date).format('dddd');
@@ -191,6 +206,46 @@ function throttle(fn, threshold, thisArg) {
 			fn.apply(thisArg, args);
 		}
 	};
+}
+var DO_BREAK = {};
+function each(obj, fn, thisArg) {
+	if(!obj) { return; }
+	var i, length = obj.length;
+	if (length === +length) {
+		for (i = 0; i < length; i++) {
+			if(fn.call(thisArg, obj[i], i, obj) === DO_BREAK) {
+				return;
+			}
+		}
+	} else {
+		i = 0;
+		for(var key in obj) {
+			if(obj.hasOwnProperty(key)) {
+				if(fn.call(thisArg, obj[key], key, obj) === DO_BREAK) {
+					break;
+				}
+			}
+		}
+	}
+}
+
+function filter(obj, fn, thisArg) {
+	var rv = [];
+	each(obj, function(val) {
+		var newVal = fn.apply(thisArg, arguments);
+		if(newVal) {
+			rv.push(newVal);
+		}
+	});
+	return rv;
+}
+
+function map(obj, fn, thisArg) {
+	var rv = [];
+	each(obj, function(val, key) {
+		rv[key] = fn.apply(thisArg, arguments);
+	});
+	return rv;
 }
 /*
 

@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="css/confapp.min.css" />
+		<link rel="stylesheet" type="text/css" href="../build/css/confapp.min.css" />
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<meta name="google-signin-client_id" content="551899241610-8l4op1d23skmbgjm6g99f50rn0v3bg56.apps.googleusercontent.com">
 	</head>
@@ -12,13 +12,14 @@
 
 	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
-	<script type="text/javascript" src="js/confapp.min.js"></script>
+	<script type="text/javascript" src="../build/js/confapp.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('.container').caWebProgram({
-				databaseURL: "INSERT DB FILENAME HERE",
-				mapImageDirectory: "images/maps/",
-				annotationImageDirectory: "images/annotations/"
+				databaseURL: "sample_conference/database/db_001.json",
+				imageDirectory: "../build/images",
+				mapImageDirectory: "sample_conference/maps/",
+				annotationImageDirectory: "sample_conference/annotations/"
 			});
 		});
 	</script>

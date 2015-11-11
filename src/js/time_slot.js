@@ -11,6 +11,9 @@ $.widget("confapp.timeSlot", {
 		headerTag: "h5",
 		numColumns: 4,
 		gridColumns: 12,
+		annotationImageDirectory: false,
+		mapImageDirectory: false,
+		imageDirectory: false,
 		getHeaderText: function(startTimestamp, endTimestamp, utc_offset, my_offset) {
 			if(startTimestamp >= 0) {
 				var startTime = new Date(startTimestamp + utc_offset + my_offset),
@@ -20,7 +23,7 @@ $.widget("confapp.timeSlot", {
 					endTimeString = moment(endTime).format('LT'),
 					startAmPmMatch = startTimeString.match(ampmRegex),
 					endAmPmMatch = endTimeString.match(ampmRegex);
-					
+
 				if(startAmPmMatch) {
 					startAmPmMatch = startAmPmMatch[0];
 				}
@@ -134,7 +137,10 @@ $.widget("confapp.timeSlot", {
 								userData: this.option("userData"),
 								columnClass: columnClass,
 								timeString: isSingular ? this._getHeaderText() : false,
-								singular: isSingular
+								singular: isSingular,
+								annotationImageDirectory: this.option('annotationImageDirectory'),
+								mapImageDirectory: this.option('mapImageDirectory'),
+								imageDirectory: this.option('imageDirectory')
 							});
 			}, this));
 		}, this));

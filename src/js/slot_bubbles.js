@@ -1,7 +1,10 @@
 $.widget("confapp.slotBubbles", {
 	options: {
 		session: false,
-		userData: false
+		userData: false,
+		annotationImageDirectory: false,
+		mapImageDirectory: false,
+		imageDirectory: false
 	},
 
 	_create: function() {
@@ -34,7 +37,10 @@ $.widget("confapp.slotBubbles", {
 						.slotBubble({
 							presentation: info.presentation,
 							percent: percent,
-							userData: this.option("userData")
+							userData: this.option("userData"),
+							annotationImageDirectory: this.option('annotationImageDirectory'),
+							mapImageDirectory: this.option('mapImageDirectory'),
+							imageDirectory: this.option('imageDirectory')
 						});
 			percentageSum += percent;
 		}, this));
@@ -97,7 +103,10 @@ $.widget("confapp.slotBubble", {
 	options: {
 		presentation: false,
 		percent: false,
-		userData: false
+		userData: false,
+		annotationImageDirectory: false,
+		mapImageDirectory: false,
+		imageDirectory: false
 	},
 
 	_create: function() {
@@ -189,7 +198,7 @@ $.widget("confapp.slotBubble", {
 
 		$.each(annotations, $.proxy(function(i, annotation) {
 			var icon = annotation.getIcon();
-			$("<img />").attr("src", "images/annotations/"+icon)
+			$("<img />").attr("src", this.option('annotationImageDirectory')+icon)
 						.css({
 							height: "20px",
 							position: "absolute",
@@ -232,15 +241,15 @@ $.widget("confapp.slotBubble", {
 
 		var userDataRow = userData.getRow(presentation.getUniqueID(), true);
 		if(userDataRow) {
-			$.each(['schedule', 'reading_list', 'vote', 'note'], function(index, fieldName) {
+			each(['schedule', 'reading_list', 'vote', 'note'], function(fieldName, index) {
 				var fieldValue = userDataRow.getField(fieldName);
 				if(fieldValue) {
 					tooltipUserAnnotations.append($('<img />').attr({
-						src: 'images/' + fieldName + '_selected.png',
+						src: this.option('imageDirectory') + fieldName + '_selected.png',
 						height: '16px'
 					}).addClass('userData'));
 				}
-			});
+			}, this);
 		}
 
 
@@ -249,7 +258,7 @@ $.widget("confapp.slotBubble", {
 													.addClass('annotation');
 
 			var icon = annotation.getIcon();
-			$("<img />").attr("src", "images/annotations/"+icon)
+			$("<img />").attr("src", this.option('annotationImageDirectory')+icon)
 						.css({
 							height: "16px",
 							position: "relative",

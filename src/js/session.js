@@ -9,7 +9,10 @@ $.widget("confapp.session", {
 		timeString: false,
 		showBubbles: true,
 		singular: false,
-		collapseOtherSessions: true
+		collapseOtherSessions: true,
+		annotationImageDirectory: false,
+		mapImageDirectory: false,
+		imageDirectory: false
 	},
 
 	_create: function() {
@@ -34,7 +37,10 @@ $.widget("confapp.session", {
 			this.bubbles = $("<table />")	.appendTo(this.element)
 											.slotBubbles({
 												session: this.option("session"),
-												userData: this.option("userData")
+												userData: this.option("userData"),
+												annotationImageDirectory: this.option('annotationImageDirectory'),
+												mapImageDirectory: this.option('mapImageDirectory'),
+												imageDirectory: this.option('imageDirectory')
 											});
 		}
 
@@ -115,6 +121,7 @@ $.widget("confapp.session", {
 		var session = this.option("session"),
 			userData = this.option("userData"),
 			database = this.option('database'),
+			iDir = this.option('imageDirectory'),
 			conferenceInfo = database.getConferenceInfo(),
 			hasUserData = conferenceInfo.schedule || conferenceInfo.reading_list ||
 							 conferenceInfo.note,
@@ -134,8 +141,8 @@ $.widget("confapp.session", {
 													activated: this._checkIfUserDataActivated('schedule'),
 													activatedLabel: " Schedule",
 													deactivatedLabel: " Schedule",
-													activatedImage: "images/schedule_selected.png",
-													deactivatedImage: "images/schedule.png",
+													activatedImage: iDir + "schedule_selected.png",
+													deactivatedImage: iDir + "schedule.png",
 												}).on("toggled", $.proxy(function(event) {
 													this._setUserData('schedule', event.activated);
 												}, this))
@@ -150,8 +157,8 @@ $.widget("confapp.session", {
 														activated: this._checkIfUserDataActivated('reading_list'),
 														activatedLabel: " Reading List",
 														deactivatedLabel: " Reading List",
-														activatedImage: "images/reading_list_selected.png",
-														deactivatedImage: "images/reading_list.png",
+														activatedImage: iDir + "reading_list_selected.png",
+														deactivatedImage: iDir + "reading_list.png",
 													}).on("toggled", $.proxy(function(event) {
 														this._setUserData('reading_list', event.activated);
 													}, this))
@@ -258,7 +265,10 @@ $.widget("confapp.session", {
 		this.nameElement.text(session.isSingular() ? (session.getName() || session.getSubEvents()[0].getName()) : session.getName());
 		this.typeElement.text((type && location) ? (type + ' / ') : type);
 		this.locationElement.location({
-			location: location
+			location: location,
+			annotationImageDirectory: this.option('annotationImageDirectory'),
+			mapImageDirectory: this.option('mapImageDirectory'),
+			imageDirectory: this.option('imageDirectory')
 		});
 	},
 	_removeEventListeners: function() {
@@ -355,7 +365,10 @@ $.widget("confapp.session", {
 							presentation: presentation,
 							expanded: numPresentations === 1,
 							//showTitle: numPresentations > 1
-							showTitle: true
+							showTitle: true,
+							annotationImageDirectory: this.option('annotationImageDirectory'),
+							mapImageDirectory: this.option('mapImageDirectory'),
+							imageDirectory: this.option('imageDirectory')
 						});
 		}, this));
 	},

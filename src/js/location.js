@@ -1,8 +1,9 @@
 $.widget("confapp.location", {
 	options: {
 		location: false,
-		mapImageDirectory: "images/maps/",
-		mapMarker: "images/map_marker.png",
+		mapImageDirectory: false,
+		imageDirectory: false,
+		mapMarker: "map_marker.png",
 		mapMarkerWidth: "30px",
 		mapMarkerHeight: "30px"
 	},
@@ -61,10 +62,10 @@ $.widget("confapp.location", {
 													.css({
 														width: "100%"
 													});
-													
+
 					if(mapLocation && mapLocation.xPercent >= 0 && mapLocation.yPercent >= 0) {
 						var markerElement = $('<img />').addClass('marker')
-														.attr('src', this.option('mapMarker'))
+														.attr('src', this.option('imageDirectory') + this.option('mapMarker'))
 														.css({
 															position: "absolute",
 															left: (100*mapLocation.xPercent) + "%",

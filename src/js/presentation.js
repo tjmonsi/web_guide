@@ -8,7 +8,9 @@ $.widget("confapp.presentation", {
 		expanded: false,
 		showTitle: true,
 		requireDescriptionExpansion: false,
-		annotationImageDirectory: "images/annotations/"
+		imageDirectory: false,
+		annotationImageDirectory: false,
+		mapImageDirectory: false
 	},
 
 	_create: function() {
@@ -117,7 +119,10 @@ $.widget("confapp.presentation", {
 			}
 			this.locationElement = $("<span />").appendTo(this.annotationsElement)
 												.location({
-													location: location
+													location: location,
+													mapImageDirectory: this.option('mapImageDirectory'),
+													annotationImageDirectory: this.option('annotationImageDirectory'),
+													imageDirectory: this.option('imageDirectory')
 												});
 		}
 
@@ -210,6 +215,7 @@ $.widget("confapp.presentation", {
 	_doExpand: function() {
 		var userData = this.option("userData"),
 			database = this.option('database'),
+			iDir = this.option('imageDirectory'),
 			conferenceInfo = database.getConferenceInfo(),
 			presentation = this.option("presentation"),
 			presentation_id = presentation.getUniqueID(),
@@ -228,8 +234,8 @@ $.widget("confapp.presentation", {
 													activated: userData.getField(presentation_id, "schedule"),
 													activatedLabel: " Schedule",
 													deactivatedLabel: " Schedule",
-													activatedImage: "images/schedule_selected.png",
-													deactivatedImage: "images/schedule.png",
+													activatedImage: iDir + "schedule_selected.png",
+													deactivatedImage: iDir + "schedule.png",
 												}).on("toggled", $.proxy(function(event) {
 													var activated = event.activated;
 													userData.setFieldAndSave(presentation_id, "schedule", activated);
@@ -245,8 +251,8 @@ $.widget("confapp.presentation", {
 														activated: userData.getField(presentation_id, "reading_list"),
 														activatedLabel: " Reading List",
 														deactivatedLabel: " Reading List",
-														activatedImage: "images/reading_list_selected.png",
-														deactivatedImage: "images/reading_list.png",
+														activatedImage: iDir + "reading_list_selected.png",
+														deactivatedImage: iDir + "reading_list.png",
 													}).on("toggled", $.proxy(function(event) {
 														var activated = event.activated;
 														userData.setFieldAndSave(presentation_id, "reading_list", activated);
@@ -262,8 +268,8 @@ $.widget("confapp.presentation", {
 												activated: userData.getField(presentation_id, "vote"),
 												activatedLabel: " Best Talk",
 												deactivatedLabel: " Best Talk",
-												activatedImage: "images/vote_selected.png",
-												deactivatedImage: "images/vote.png",
+												activatedImage: iDir + "vote_selected.png",
+												deactivatedImage: iDir + "vote.png",
 												checkBeforeActivating: $.proxy(function(val, onReady) {
 													if(val) {
 														if(presentation.getStartTimestamp() <= (new Date()).getTime()) {
