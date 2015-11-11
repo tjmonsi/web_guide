@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="src/vendor/Skeleton-2.0.4/css/skeleton.css" />
+		<link rel="stylesheet" type="text/css" href="src/css/confapp_style.css" />
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<meta name="google-signin-client_id" content="551899241610-8l4op1d23skmbgjm6g99f50rn0v3bg56.apps.googleusercontent.com">
+	</head>
+	<body>
+		<div class='container'></div>
+	</body>
+
+	<script type="text/javascript" src="src/vendor/jquery-2.1.4.js"></script>
+	<script type="text/javascript" src="src/vendor/jquery-ui.js"></script>
+	<script type="text/javascript" src="src/vendor/moment-with-locales.js"></script>
+
+	<script type="text/javascript" src="src/js/db_query.js"></script>
+	<script type="text/javascript" src="src/js/core.js"></script>
+	<script type="text/javascript" src="src/js/day.js"></script>
+	<script type="text/javascript" src="src/js/time_slot.js"></script>
+	<script type="text/javascript" src="src/js/slot_bubbles.js"></script>
+	<script type="text/javascript" src="src/js/session.js"></script>
+	<script type="text/javascript" src="src/js/presentation.js"></script>
+	<script type="text/javascript" src="src/js/person.js"></script>
+	<script type="text/javascript" src="src/js/location.js"></script>
+	<script type="text/javascript" src="src/js/user_data.js"></script>
+	<script type="text/javascript" src="src/js/user_data_view.js"></script>
+	<script type="text/javascript" src="src/js/search.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('.container').caWebProgram({
+				databaseURL: 'src/database/db_003.json'
+			});
+		});
+	</script>
+</html>

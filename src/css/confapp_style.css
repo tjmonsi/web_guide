@@ -1,0 +1,383 @@
+.highlight {
+  color: black;
+  background-color: #E2FF00; }
+
+.program_header {
+  border-bottom: 1px solid #CCC;
+  margin-bottom: 10px;
+  padding-left: 8px;
+  clear: both;
+  overflow: auto; }
+  .program_header #googleSignIn {
+    float: right;
+    margin-left: 2px;
+    margin-right: 2px; }
+  .program_header .voter_id {
+    float: right;
+    cursor: pointer;
+    border: 1px solid #DDD;
+    border-radius: 3px;
+    padding: 5px;
+    margin-left: 2px;
+    margin-right: 2px; }
+    .program_header .voter_id:hover {
+      background-color: #F8F8F8; }
+  .program_header .ca_search {
+    background-color: white;
+    padding: 10px; }
+    .program_header .ca_search label {
+      margin-right: 5px;
+      float: left; }
+    .program_header .ca_search input {
+      font-size: 1.2em;
+      width: 400px;
+      margin-bottom: 5px; }
+    .program_header .ca_search .clearSearch {
+      display: none;
+      margin-left: 5px;
+      margin-right: 5px;
+      text-decoration: none; }
+    .program_header .ca_search.sticky {
+      position: fixed;
+      top: 0px;
+      z-index: 100;
+      border: 1px solid #CCC;
+      padding: 5px;
+      background-color: #EEE;
+      border-radius: 3px;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      border-top: none; }
+      .program_header .ca_search.sticky .clearSearch {
+        display: inline; }
+
+.conference_days {
+  margin-top: 50px; }
+  .conference_days .conference_day .day_header {
+    padding-left: 8px; }
+    .conference_days .conference_day .day_header .day_of_week {
+      padding-right: 10px; }
+    .conference_days .conference_day .day_header .date {
+      opacity: 0.5; }
+  .conference_days .conference_day .sessions .location:hover {
+    text-decoration: underline; }
+  .conference_days .conference_day .sessions .time_slot {
+    margin-top: 10px;
+    margin-bottom: 10px; }
+    .conference_days .conference_day .sessions .time_slot.plural {
+      border: 1px solid #EEE;
+      border-radius: 3px; }
+      .conference_days .conference_day .sessions .time_slot.plural .time_slot_header {
+        background-color: #EEE;
+        margin-bottom: 0px; }
+        .conference_days .conference_day .sessions .time_slot.plural .time_slot_header .weekday {
+          opacity: 0.5; }
+    .conference_days .conference_day .sessions .time_slot .time_slot_header {
+      padding-left: 8px;
+      padding-right: 8px; }
+    .conference_days .conference_day .sessions .time_slot .sessions.plural {
+      padding: 8px; }
+    .conference_days .conference_day .sessions .time_slot .sessions .session {
+      border-radius: 3px;
+      padding: 8px;
+      cursor: pointer; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.searchResult {
+        border: 1px solid #1EAEDB; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.notSearchResult {
+        opacity: 0.2; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session:hover {
+        background-color: #F8F8F8; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.singular.hasTime .sessionInfo {
+        padding-left: 200px; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.singular.hasTime .user_data {
+        padding-left: 200px; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.singular.hasTime .time {
+        width: 200px;
+        display: inline-block; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session.expanded {
+        background-color: #F8F8F8;
+        border: 1px solid #CCC;
+        border-bottom: #F8F8F8;
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+        position: relative;
+        top: 1px; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session .session_header {
+        margin-bottom: 0px; }
+        .conference_days .conference_day .sessions .time_slot .sessions .session .session_header .time .weekday {
+          opacity: 0.5; }
+      .conference_days .conference_day .sessions .time_slot .sessions .session .sessionInfo {
+        opacity: 0.5; }
+    .conference_days .conference_day .sessions .time_slot .sessions .expanded_session {
+      background-color: #F8F8F8;
+      border: 1px solid #CCC;
+      margin-bottom: 5px; }
+      .conference_days .conference_day .sessions .time_slot .sessions .expanded_session.searchResult {
+        border: 1px solid #1EAEDB; }
+      .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 8px;
+        border-bottom: 1px solid #DDD; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .name {
+          font-weight: bold; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .affiliation {
+          font-weight: normal;
+          opacity: 0.5; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .name, .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .affiliation {
+          cursor: pointer; }
+          .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .name:hover, .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .chair .affiliation:hover {
+            text-decoration: underline; }
+      .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded {
+        border-bottom: 1px solid #CCC;
+        padding: 8px; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded.notSearchResult {
+          opacity: 0.3; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded.searchResult {
+          border-left: 3px solid #1EAEDB; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded:nth-child(even) {
+          background-color: #F0F0F0; }
+          .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded:nth-child(even) .authorList {
+            border-bottom: 1px solid #DDD; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded:last-child {
+          border-bottom: none; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .annotation {
+          margin-left: 5px;
+          margin-right: 5px; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .presentationTitle {
+          margin-bottom: 0px; }
+          .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .presentationTitle a.scrollToTimeSlot {
+            float: right;
+            text-decoration: none;
+            color: #AAA; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .presentation_type {
+          opacity: 0.5; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList {
+          padding-top: 5px;
+          margin-top: 5px;
+          border-bottom: 1px solid #EEE;
+          padding-bottom: 5px;
+          margin-bottom: 5px; }
+          .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList .person {
+            text-align: left;
+            margin-top: 5px;
+            margin-bottom: 5px; }
+            .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList .person .name {
+              line-height: 1em;
+              margin-bottom: 1px;
+              margin-top: 1px;
+              cursor: pointer; }
+              .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList .person .name:hover {
+                text-decoration: underline; }
+            .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList .person .affiliation {
+              opacity: 0.5;
+              line-height: 1em;
+              font-size: 0.9em;
+              margin-bottom: 1px;
+              margin-top: 1px;
+              cursor: pointer; }
+              .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .authorList .person .affiliation:hover {
+                text-decoration: underline; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .abstract {
+          line-height: 1.2em;
+          font-size: 0.9em;
+          text-align: justify;
+          padding-right: 5px; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded .no_abstract {
+          text-align: center;
+          color: #AAA;
+          padding: 20px; }
+    .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles {
+      width: 100%;
+      margin-bottom: 0px; }
+      .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble {
+        border-radius: 4px;
+        height: 8px;
+        border: 1px solid #CCC;
+        background-color: #EEE;
+        opacity: 0.6; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.notSearchResult {
+          opacity: 0.1; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble:hover {
+          border: 1px solid #AAA;
+          opacity: 1.0; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.searchResult {
+          border: 1px solid #1EAEDB;
+          opacity: 1.0; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.note {
+          background-color: #F99; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.vote {
+          background-color: #f89a1b; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.reading_list {
+          background-color: #65dc33; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble.schedule {
+          background-color: #47c8fa; }
+        .conference_days .conference_day .sessions .time_slot .sessions .slot_bubbles .slot_bubble .annotation {
+          opacity: 0.5; }
+  .conference_days .user_data .toggleButton {
+    font-size: 0.95em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #AAA;
+    padding-top: 2px;
+    padding-bottom: 2px; }
+    .conference_days .user_data .toggleButton img {
+      position: relative;
+      top: 2px; }
+    .conference_days .user_data .toggleButton:hover {
+      background-color: #EEE; }
+    .conference_days .user_data .toggleButton.active.vote {
+      color: #f89a1b; }
+    .conference_days .user_data .toggleButton.active.note {
+      color: #F99; }
+    .conference_days .user_data .toggleButton.active.reading_list {
+      color: #65dc33; }
+    .conference_days .user_data .toggleButton.active.schedule {
+      color: #47c8fa; }
+  .conference_days .user_data .note.display {
+    font-size: 0.9em;
+    color: #F99; }
+  .conference_days .user_data .note.display.placeholder {
+    color: #AAA; }
+  .conference_days .user_data .note textarea {
+    width: 100%;
+    border: 1px solid #F99;
+    margin-bottom: 2px;
+    padding: 3px; }
+  .conference_days .user_data .note .note_button {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8em; }
+    .conference_days .user_data .note .note_button.save {
+      margin-right: 8px;
+      color: green; }
+    .conference_days .user_data .note .note_button.cancel {
+      color: #900; }
+
+.ui-tooltip {
+  background: #666;
+  color: white;
+  border: none;
+  padding: 0;
+  opacity: 1;
+  width: 350px;
+  border-radius: 3px; }
+  .ui-tooltip .ui-tooltip-content {
+    position: relative;
+    padding: 1em;
+    font-size: 0.9em; }
+    .ui-tooltip .ui-tooltip-content .title {
+      color: white; }
+    .ui-tooltip .ui-tooltip-content .authors {
+      color: #BBB;
+      font-size: 0.9em; }
+    .ui-tooltip .ui-tooltip-content .user_annotations {
+      margin-top: 5px; }
+      .ui-tooltip .ui-tooltip-content .user_annotations img.userData {
+        margin-right: 5px; }
+    .ui-tooltip .ui-tooltip-content .annotations .annotation {
+      color: #BBB;
+      overflow: hidden;
+      border-radius: 5px; }
+      .ui-tooltip .ui-tooltip-content .annotations .annotation img {
+        filter: invert(100%);
+        -webkit-filter: invert(1);
+        opacity: 0.5; }
+  .ui-tooltip .ui-tooltip-content::after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    display: block;
+    width: 0;
+    bottom: -5px;
+    left: 175px;
+    border-color: #666 transparent;
+    border-width: 5px 5px 0; }
+
+.ui-helper-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px; }
+
+.ui-autocomplete {
+  background-color: white;
+  position: fixed;
+  font-size: 0.8em;
+  z-index: 500;
+  border: 1px solid #CCC;
+  border-radius: 3px;
+  max-width: 500px;
+  overflow: hidden; }
+  .ui-autocomplete li {
+    list-style-type: none;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #F0F0F0;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer; }
+    .ui-autocomplete li:hover {
+      background-color: #FAFAFA; }
+    .ui-autocomplete li:nth-child(even) {
+      background-color: #FCFCFC; }
+    .ui-autocomplete li:last-child {
+      border-bottom: none; }
+    .ui-autocomplete li.ui-autocomplete-category {
+      font-weight: bold;
+      background-color: #DDD;
+      cursor: default; }
+      .ui-autocomplete li.ui-autocomplete-category:hover {
+        background-color: #DDD; }
+
+.ui-dialog.voter_id {
+  background-color: white;
+  border: 1px solid #333;
+  border-radius: 3px;
+  z-index: 10; }
+  .ui-dialog.voter_id .ui-dialog-titlebar {
+    display: none; }
+  .ui-dialog.voter_id .instructions {
+    margin-bottom: 5px;
+    padding: 10px; }
+  .ui-dialog.voter_id .voter_id_feedback {
+    padding: 10px; }
+    .ui-dialog.voter_id .voter_id_feedback.success {
+      color: #3c763d;
+      background-color: #dff0d8; }
+    .ui-dialog.voter_id .voter_id_feedback.error {
+      color: #a94442;
+      background-color: #f2dede; }
+    .ui-dialog.voter_id .voter_id_feedback.waiting {
+      color: #8a6d3b;
+      background-color: #fcf8e3; }
+  .ui-dialog.voter_id input {
+    margin-left: 10px; }
+    .ui-dialog.voter_id input.success {
+      border: 1px solid #3c763d;
+      color: #3c763d; }
+    .ui-dialog.voter_id input.error {
+      border: 1px solid #a94442;
+      color: #a94442; }
+    .ui-dialog.voter_id input.waiting {
+      border: 1px solid #8a6d3b;
+      color: #8a6d3b; }
+  .ui-dialog.voter_id .submit_buttons {
+    padding-left: 10px;
+    padding-right: 10px; }
+
+.ui-widget-overlay.ui-front {
+  opacity: 0.7;
+  background-color: #333;
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+/*# sourceMappingURL=confapp_style.css.map */
