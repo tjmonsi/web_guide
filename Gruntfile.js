@@ -4,7 +4,8 @@ var fs = require('fs'),
 
 var SRC = 'src',
 	BUILD = 'build',
-	TEST = 'test';
+	TEST = 'test',
+	DB_QUERY = 'javascript_db_query';
 
 function mapJoin() {
 	var arr = _.last(arguments),
@@ -15,13 +16,13 @@ function mapJoin() {
 }
 
 module.exports = function(grunt) {
-	var src_files = mapJoin(SRC, 'js', [
+	var src_files = [path.join(DB_QUERY, 'confapp_db_query')].concat(mapJoin(SRC, 'js', [
 						"db_query.js", "core.js", "day.js",
 						"person.js", "slot_bubbles.js",
 						"time_slot.js", "session.js", "presentation.js",
 						"person.js", "location.js", "session.js",
 						"user_data.js", "user_data_view.js", "search.js"
-					]),
+					])),
 		enclosed_src_files = ([path.join(SRC, 'vendor', 'jquery-ui.js'),
 								path.join(SRC, 'js', 'header.js')]).concat(src_files, path.join(SRC, 'js', 'footer.js'));
 
@@ -100,9 +101,12 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				options: {
-					process: function(content, srcpath) {
-						return content.replace("INSERT DB FILENAME HERE", grunt.option("web_program_db_filename"));
-					}
+					noProcess: [
+						'**/*.{png,gif,jpg,ico,psd,ttf,otf,woff,svg}'
+					],
+					//process: function(content, srcpath) {
+						//return content.replace("INSERT DB FILENAME HERE", grunt.option("web_program_db_filename"));
+					//}
 				},
 				files: [
 					{

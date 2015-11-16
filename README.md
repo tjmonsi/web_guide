@@ -1,5 +1,6 @@
 To build from scratch, first install [Grunt](http://gruntjs.com/). Run:
 
+	git submodule update --init --recursive
 	npm install .
 	grunt
 

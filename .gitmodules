@@ -1,0 +1,3 @@
+[submodule "javascript_db_query"]
+	path = javascript_db_query
+	url = https://github.com/confapp/javascript_db_query.git
