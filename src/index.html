@@ -14,11 +14,25 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="js/confapp.min.js"></script>
 	<script type="text/javascript">
+		function getUrlParameter(sParam) {
+		    var sPageURL = window.location.search.substring(1),
+				sURLVariables = sPageURL.split('&'),
+				i = 0,
+				len = sURLVariables.length,
+				sParameterName;
+
+		    for (; i < len; i++) {
+		        sParameterName = sURLVariables[i].split('=');
+		        if (sParameterName[0] === sParam) {
+		            return sParameterName[1];
+		        }
+		    }
+		}
 		$(function() {
 			$('.container').caWebProgram({
-				databaseURL: "INSERT DB FILENAME HERE",
-				mapImageDirectory: "images/maps/",
-				annotationImageDirectory: "images/annotations/",
+				databaseURL: getUrlParameter('db'),
+				mapImageDirectory: getUrlParameter('map_images'),
+				annotationImageDirectory: getUrlParameter('annotation_images'),
 				conferenceLogo: false
 			});
 		});

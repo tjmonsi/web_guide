@@ -16,7 +16,7 @@ function mapJoin() {
 }
 
 module.exports = function(grunt) {
-	var src_files = [path.join(DB_QUERY, 'confapp_db_query')].concat(mapJoin(SRC, 'js', [
+	var src_files = [path.join(DB_QUERY, 'confapp_db_query.js')].concat(mapJoin(SRC, 'js', [
 						"utils.js", "core.js", "day.js",
 						"person.js", "slot_bubbles.js",
 						"time_slot.js", "session.js", "presentation.js",
@@ -25,6 +25,7 @@ module.exports = function(grunt) {
 					])),
 		enclosed_src_files = ([path.join(SRC, 'vendor', 'jquery-ui.js'),
 								path.join(SRC, 'js', 'header.js')]).concat(src_files, path.join(SRC, 'js', 'footer.js'));
+	console.log(src_files);
 
 	grunt.initConfig({
 		jshint: {
