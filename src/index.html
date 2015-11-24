@@ -29,12 +29,19 @@
 		    }
 		}
 		$(function() {
-			$('.container').caWebProgram({
-				databaseURL: getUrlParameter('db'),
-				mapImageDirectory: getUrlParameter('map_images'),
-				annotationImageDirectory: getUrlParameter('annotation_images'),
-				conferenceLogo: false
-			});
+			var versionsURL = getUrlParameter('versions');
+			if(versionsURL) {
+				getLatestConfappDatabase(versionsURL, function(info) {
+					$('.container').caWebProgram(info);
+				});
+			} else {
+				$('.container').caWebProgram({
+					databaseURL: getUrlParameter('db'),
+					mapImageDirectory: getUrlParameter('map_images'),
+					annotationImageDirectory: getUrlParameter('annotation_images'),
+					conferenceLogo: false
+				});
+			}
 		});
 	</script>
 </html>
