@@ -174,8 +174,8 @@ var UserDataRow = function(event_id, userData, options) {
 	};
 }(UserDataRow));
 
-var UserData = function(url, conference_id, canWebSync, callback, thisArg) {
-	this._url = url;
+var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisArg) {
+	this._firebaseRef = firebaseRef;
 	this._canWebSync = canWebSync;
 	this._conference_id = conference_id;
 	this._loaded = false;
@@ -188,6 +188,11 @@ var UserData = function(url, conference_id, canWebSync, callback, thisArg) {
 		this.onLoad(callback, thisArg);
 	}
 	this.loadLocally();
+	console.log(this.getFirebaseRef());
+
+	if(this._firebaseRef) {
+		this._firebaseRef.onAuth(this._onAuth, this);
+	}
 };
 (function(My) {
 	var proto = My.prototype;
@@ -204,6 +209,23 @@ var UserData = function(url, conference_id, canWebSync, callback, thisArg) {
 			this.rows[event_id] = row;
 		}
 	};
+
+	proto._onAuth = function(authData) {
+		console.log('onAuth', authData);
+		if(authData) {
+			this.webSync();
+		}
+	};
+
+	proto.getFirebaseRef = function() {
+		var rootRef = this._firebaseRef;
+		var authInfo = rootRef.getAuth();
+		if(authInfo) {
+			var conference_id = this.getConferenceID().replace(/\./g, ''),
+				user_id = authInfo.uid;
+			return rootRef.child(conference_id).child(user_id);
+		}
+	},
 
 	proto.webSync = function() {
 		if(this.canWebSync()) {
@@ -241,7 +263,7 @@ var UserData = function(url, conference_id, canWebSync, callback, thisArg) {
 	proto.loadLocally = function() {
 		var do_merge_rows = $.proxy(merge_rows, this);
 
-		$.each(this.getLocalStorageRows(this._conference_id), do_merge_rows);
+		$.each(this.getLocalStorageRows(this.getConferenceID()), do_merge_rows);
 		this._onLoaded();
 
 		var other_str = localStorage.getItem(USER_DATA_OTHER_STORAGE);
@@ -538,3 +560,4 @@ function rest(args, index) {
 function onGoogleSignin(googleUser) {
 	$("#googleSignIn").google_signin("loggedIn", googleUser);
 }
+

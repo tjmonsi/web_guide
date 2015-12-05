@@ -4,6 +4,7 @@
 	"author": "Steve Oney <swloney@gmail.com>",
 	"version": "1.0.0",
 	"dependencies": {
+		"express": "~4.13",
 		"underscore": "~1.8",
 		"grunt": "~0.4",
 		"grunt-contrib-cssmin": "~0.14",

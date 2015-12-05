@@ -1,41 +1,71 @@
 /*jshint scripturl:true*/
 $.widget("confapp.google_signin", {
 	options: {
-		database: false
+		database: false,
+		firebaseRef: false,
 	},
 
 	_create: function() {
 		var database = this.option('database');
+		this._signed_in = false;
+		this.element.hide();
 		database.onLoad(function() {
 			var conferenceInfo = database.getConferenceInfo();
 
-			if(!conferenceInfo.data_sync) {
-				this.element.hide();
+			if(conferenceInfo.data_sync) {
+				this.element.show();
 			}
 		}, this);
 
 		this._addClasses();
+		this._addListeners();
 	},
 
 	_destroy: function() {
 	},
 
 	_addClasses: function() {
-		this.element.addClass("g-signin2")
-					.attr({
-						"data-onsuccess": "onGoogleSignin",
-						"id": "googleSignIn"
-					});
+		this.element.addClass("ca-button google-signin");
 	},
-	loggedIn: function(googleUser) {
-		var profile = googleUser.getBasicProfile(),
-			id_token = googleUser.getAuthResponse().id_token,
-			event = new $.Event("googleLogin");
 
-		event.profile = profile;
-		event.id_token = id_token;
+	_addListeners: function() {
+		var ref = this.option('firebaseRef');
+		this.element.on('click', $.proxy(this._onClick, this));
+		ref.onAuth($.proxy(this._onAuth, this));
 
-		this.element.trigger(event);
+		this._onAuth(ref.getAuth());
+	},
+	_onAuth: function(authState) {
+		if(authState) {
+			var googleInfo = authState.google;
+			this.element.text('Sign out from ' + googleInfo.displayName);
+		} else {
+			this.element.text('Sign in to sync preferences');
+		}
+	},
+	_onClick: function() {
+		if(this._isSignedIn()) {
+			this._doSignout();
+		} else {
+			this._doSignin();
+		}
+	},
+
+	_isSignedIn: function() {
+		var ref = this.option('firebaseRef');
+		return ref.getAuth();
+	},
+	_doSignin: function() {
+		var ref = this.option('firebaseRef');
+		ref.authWithOAuthPopup("google", $.proxy(function(error, authData) {
+			if (error) {
+				console.log("Login Failed!", error);
+			}
+		}, this));
+	},
+	_doSignout: function() {
+		var ref = this.option('firebaseRef');
+		ref.unauth()
 	}
 });
 
@@ -347,7 +377,7 @@ $.widget("confapp.viewVoterID", {
 
 		if(database.getConferenceInfo().vote) {
 			this._updateMessage();
-			this.element.addClass('voter_id');
+			this.element.addClass('ca-button voter_id');
 		}
 	},
 	_destroy: function() {

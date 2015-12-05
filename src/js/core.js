@@ -7,7 +7,8 @@ $.widget("confapp.caWebProgram", {
 		annotationImageDirectory: 'images/annotations',
 		mapImageDirectory: 'images/maps',
 		imageDirectory: 'images',
-		conferenceLogo: false
+		conferenceLogo: false,
+		firebaseRef: new Firebase("https://confapp-data-sync.firebaseio.com")
 	},
 
 	_create: function() {
@@ -24,7 +25,8 @@ $.widget("confapp.caWebProgram", {
 		this.signinElement = $("<span />")	.appendTo(this.headerElement)
 											.on("googleLogin", $.proxy(this._onGoogleLogin, this))
 											.google_signin({
-												database: this.getDatabase()
+												database: this.getDatabase(),
+												firebaseRef: this.option('firebaseRef')
 											});
 
 		this.daysElement = $("<div />")	.appendTo(this.element)
@@ -49,7 +51,7 @@ $.widget("confapp.caWebProgram", {
 
 		this.loadingElement.remove();
 
-		this._user_data = new UserData(conference_info.data_url, database.getID(), conference_info.data_sync);
+		this._user_data = new UserData(this.option('firebaseRef'), database.getID(), conference_info.data_sync);
 
 		if(this.option("saveOnUnload")) {
 			$(window).on("beforeunload", $.proxy(function() {

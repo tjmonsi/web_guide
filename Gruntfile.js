@@ -20,8 +20,7 @@ module.exports = function(grunt) {
 						"utils.js", "core.js", "day.js",
 						"person.js", "slot_bubbles.js",
 						"time_slot.js", "session.js", "presentation.js",
-						"person.js", "location.js", "session.js",
-						"user_data.js", "user_data_view.js", "search.js"
+						"person.js", "location.js", "user_data.js", "user_data_view.js", "search.js"
 					])),
 		enclosed_src_files = ([path.join(SRC, 'vendor', 'jquery-ui.js'),
 								path.join(SRC, 'js', 'header.js')]).concat(src_files, path.join(SRC, 'js', 'footer.js'));
