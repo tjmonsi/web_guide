@@ -140,6 +140,15 @@ function map(obj, fn, thisArg) {
 	});
 	return rv;
 }
+
+function rest(args, index) {
+	return Array.prototype.slice.call(args, index);
+}
+
+function sanitizeFirebaseKey(key) {
+	return key	.replace(/\./g, '')
+				.replace(/\$/g, '');
+}
 /*
 
 function preg_quote(str) {

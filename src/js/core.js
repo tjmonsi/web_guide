@@ -100,12 +100,14 @@ $.widget("confapp.caWebProgram", {
 
 		if(this.option('showLogo')) {
 		}
+		/*
 
 		this.voterIDElement = $('<span />').appendTo(this.headerElement)
 											.viewVoterID({
 												userData: this.getUserData(),
 												database: database
 											});
+											*/
 
 		this.searchElement = $('<div />').appendTo(this.headerElement)
 											.search({

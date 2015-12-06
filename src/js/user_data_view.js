@@ -363,6 +363,8 @@ $.widget("confapp.toggleButton", {
 	}
 });
 
+/*
+
 $.widget("confapp.viewVoterID", {
 	options: {
 		userData: false,
@@ -494,3 +496,5 @@ function requestVoterID(userData, callback) {
 	voterIDInput.val(userData.getVoterID());
 	voterIDInput.focus().select();
 }
+
+*/

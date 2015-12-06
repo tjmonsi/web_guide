@@ -18,10 +18,12 @@ var getFieldDefault = function(field_name) {
 
 var dataRowFields = ["schedule", "reading_list", "note", "vote"];
 var UserDataRow = function(event_id, userData, options) {
+	this._event_id = event_id;
 	this._options = options;
 	this._userData = userData;
 	this._listeners = userData._row_listeners[event_id] || [];
 	delete userData._row_listeners[event_id];
+
 	if(this._listeners.length > 0) {
 		$.each(dataRowFields, $.proxy(function(i, field_name) {
 			if(this._options.hasOwnProperty(field_name)) {
@@ -29,9 +31,34 @@ var UserDataRow = function(event_id, userData, options) {
 			}
 		}, this));
 	}
+
+	this.$onValue = $.proxy(this._onValue, this);
+	//this.setFirebaseRef(firebaseRef);
 };
 (function(My) {
 	var proto = My.prototype;
+
+	proto.getFirebaseRef = function() {
+		return this._firebaseRef;
+	};
+	proto.setFirebaseRef = function(ref) {
+		var oldFirebaseRef = this._firebaseRef;
+
+		if(oldFirebaseRef) {
+			oldFirebaseRef.off('value', this.$onValue);
+		}
+
+		this._firebaseRef = ref;
+
+		if(this._firebaseRef) {
+			this._firebaseRef.on('value', this.$onValue);
+		}
+	};
+
+	proto._onValue = function(dataSnapshot) {
+		var remoteRow = this.getParent().webDataToRow(dataSnapshot.val());
+		this.mergeAndSave(remoteRow);
+	};
 
 	proto._doSetField = function(field_name, field_value, updated_at) {
 		this._options[field_name] = field_value;
@@ -49,18 +76,6 @@ var UserDataRow = function(event_id, userData, options) {
 		});
 	};
 
-	proto._notifyFieldChange = function(field_name, field_value, updated_at, callback, thisArg) {
-		this._setWebDataRow(field_name, field_value, updated_at,
-						function(err, row) {
-							if(!err) {
-								this._doSetField(field_name, row.getField(field_name), row.getFieldUpdatedAt(field_name));
-							}
-							if(callback) {
-								callback.apply(thisArg || this, arguments);
-							}
-						}, this);
-	};
-
 	proto.setField = function(field_name, field_value, callback, thisArg) {
 		var timestamp = new Date(),
 			args = rest(arguments, 0);
@@ -68,7 +83,9 @@ var UserDataRow = function(event_id, userData, options) {
 		args.splice(2, 0, timestamp); // insert a timestamp into the arguments
 
 		this._doSetField.apply(this, args);
-		this._notifyFieldChange.apply(this, args);
+		this.pushToWeb(function() {
+			return callback.call(thisArg||this);
+		});
 	};
 	proto.setFieldAndSave = function(field_name, field_value, callback, thisArg) {
 		return this.setField(field_name, field_value, function() {
@@ -90,8 +107,8 @@ var UserDataRow = function(event_id, userData, options) {
 		return this.getField(field_name+"_updated_at");
 	};
 	proto.merge = function(otherRow) {
-		var changedFields = [];
-		$.each(dataRowFields, $.proxy(function(index, field_name) {
+		var needToPushToWeb = false;
+		each(dataRowFields, function(field_name, index) {
 			var updated_at = this.getFieldUpdatedAt(field_name),
 				other_updated_at = otherRow.getFieldUpdatedAt(field_name),
 				updated_at_timestamp = updated_at.getTime(),
@@ -99,15 +116,20 @@ var UserDataRow = function(event_id, userData, options) {
 				other_value = otherRow.getField(field_name),
 				my_value = this.getField(field_name);
 
-			if(other_updated_at_timestamp > updated_at_timestamp) {
+			if(other_updated_at_timestamp >= updated_at_timestamp) {
 				this._doSetField(field_name, other_value, other_updated_at);
-				changedFields.push(field_name);
-			} else if(other_value !== my_value){
-				this._notifyFieldChange(field_name, my_value, updated_at);
+			} else {
+				needToPushToWeb = true;
 			}
-		}, this));
-		return changedFields;
+		}, this);
+
+		return needToPushToWeb;
 	};
+	proto.mergeAndSave = function() {
+		if(this.merge.apply(this, arguments)) {
+			this.pushToWeb();
+		}
+	}
 	proto.getParent = function() {
 		return this._userData;
 	};
@@ -138,38 +160,35 @@ var UserDataRow = function(event_id, userData, options) {
 		});
 		return obj;
 	};
-	proto._setWebDataRow = function(field_name, field_value, updated_at, callback, thisArg) {
+	proto.getEventID = function() {
+		return this._event_id;
+	};
+
+	proto.pushToWeb = function(callback, thisArg) {
 		var userData = this.getParent();
+
 		if(userData.canWebSync()) {
 			var event_id = this.getField("event_id");
 
-			if(field_name === "reading_list" || field_name === "schedule" || field_name === "vote") {
-				field_value = field_value ? 1 : 0;
-			}
-			$.ajax({
-				url: userData.getURL(),
-				method: "POST",
-				data: {
-					command: "set_field",
-					field: field_name,
-					value: field_value,
-					event_id: event_id,
-					id_token: userData.getGoogleIDToken(),
-					voter_id: userData.getVoterID(),
-					conference_id: userData.getConferenceID(),
-					updated_at: Math.round(updated_at.getTime() / 1000)
-				},
-				success: $.proxy(function(data) {
-					if(data.result === "error") {
-						callback.call(thisArg || this, data.error);
-					} else {
-						callback.call(thisArg || this, false, this.getParent().sqlToRow(data.value));
+			var firebaseRef = this.getFirebaseRef();
+			if(firebaseRef) {
+				firebaseRef.transaction($.proxy(function(currentData) {
+					if(currentData) {
+						var data = this.getParent().webDataToRow(currentData);
+						this.merge(data);
 					}
-				}, this),
-				error: function(jqXHR, textStatus, errorThrown) {
-					callback.call(thisArg || this, errorThrown);
+
+					if(callback) {
+						callback.call(thisArg || this);
+					}
+
+					return this.serialize();
+				}, this));
+			} else {
+				if(callback) {
+					callback.call(thisArg || this, new Error('No Firebase ref'));
 				}
-			});
+			}
 		}
 	};
 }(UserDataRow));
@@ -188,7 +207,8 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		this.onLoad(callback, thisArg);
 	}
 	this.loadLocally();
-	console.log(this.getFirebaseRef());
+
+	this.$onChildAdded = $.proxy(this._onChildAdded, this);
 
 	if(this._firebaseRef) {
 		this._firebaseRef.onAuth(this._onAuth, this);
@@ -197,54 +217,86 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 (function(My) {
 	var proto = My.prototype;
 
-	var merge_rows = function(event_id, row) {
+	var merge_rows = function(row, event_id) {
 		var existing_row = this.rows[event_id];
 		if(existing_row) {
-			var changed_fields = existing_row.merge(row),
-				changed_values = $.map(changed_fields, function(field_name) {
-					return existing_row.getField(field_name);
-				});
-
+			existing_row.mergeAndSave(row);
 		} else {
 			this.rows[event_id] = row;
+			row.setFirebaseRef(this.getEventFirebaseRef(row.getEventID()));
 		}
 	};
 
+	proto.mergeRows = function() {
+		return merge_rows.apply(this, arguments);
+	};
+
 	proto._onAuth = function(authData) {
-		console.log('onAuth', authData);
+		this.updateRowFirebaseRefs();
 		if(authData) {
 			this.webSync();
 		}
+	};
+
+	proto.updateRowFirebaseRefs = function() {
+		var oldFirebaseRef = this._currentFirebaseRef;
+		if(oldFirebaseRef) {
+			oldFirebaseRef.off('child_added', this.$onChildAdded);
+		}
+		this._currentFirebaseRef = this.getFirebaseRef();
+		if(this._currentFirebaseRef) {
+			this._currentFirebaseRef.on('child_added', this.$onChildAdded);
+		}
+		each(this.rows, function(row, event_id) {
+			row.setFirebaseRef(this.getEventFirebaseRef(event_id));
+		}, this);
+	};
+
+	proto._onChildAdded = function(childSnapshot) {
+		var event_id = childSnapshot.key(),
+			row = this.webDataToRow(childSnapshot.val());
+
+		this.mergeRows(row, event_id);
 	};
 
 	proto.getFirebaseRef = function() {
 		var rootRef = this._firebaseRef;
 		var authInfo = rootRef.getAuth();
 		if(authInfo) {
-			var conference_id = this.getConferenceID().replace(/\./g, ''),
+			var conference_id = sanitizeFirebaseKey(this.getConferenceID()),
 				user_id = authInfo.uid;
 			return rootRef.child(conference_id).child(user_id);
 		}
-	},
+	};
+
+	proto.getEventFirebaseRef = function(event_id) {
+		var userFirebaseRef = this.getFirebaseRef();
+		if(userFirebaseRef) {
+			if(!event_id) debugger;
+			return userFirebaseRef.child(event_id);
+		}
+	};
 
 	proto.webSync = function() {
 		if(this.canWebSync()) {
 			var found_rows = {};
-			$.each(this.rows, function(key, value) {
+			each(this.rows, function(value, key) {
 				found_rows[key] = false;
 			});
+
 			this.getAllWebData(function(err, rows) {
 				if(!err) {
 					var do_merge_rows = $.proxy(merge_rows, this);
+					each(rows, do_merge_rows);
 
-					$.each(rows, do_merge_rows);
-					$.each(rows, function(key, row) {
+					each(rows, function(row, key) {
 						found_rows[key] = true;
 					});
-					$.each(found_rows, $.proxy(function(event_id, was_found) {
+
+					each(found_rows, $.proxy(function(was_found, event_id) {
 						if(!was_found) {
 							var otherRow = new UserDataRow(event_id, this, {event_id: event_id});
-							do_merge_rows(event_id, otherRow);
+							do_merge_rows(otherRow, event_id);
 						}
 					}, this));
 				}
@@ -257,14 +309,16 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		} else if(!avoid_create) {
 			var row = new UserDataRow(event_id, this, {event_id: event_id});
 			this.rows[event_id] = row;
+			row.setFirebaseRef(this.getEventFirebaseRef(row.getEventID()));
 			return row;
 		}
 	};
 	proto.loadLocally = function() {
 		var do_merge_rows = $.proxy(merge_rows, this);
 
-		$.each(this.getLocalStorageRows(this.getConferenceID()), do_merge_rows);
+		each(this.getLocalStorageRows(this.getConferenceID()), do_merge_rows);
 		this._onLoaded();
+		/*
 
 		var other_str = localStorage.getItem(USER_DATA_OTHER_STORAGE);
 		if(other_str) {
@@ -277,6 +331,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 				console.error(e);
 			}
 		}
+		*/
 
 		return this;
 	};
@@ -337,6 +392,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	proto.stringify = function() {
 		return JSON.stringify(this.serialize());
 	};
+	/*
 	proto.setVoterID = function(id) {
 		this._voter_id = id;
 		var listeners = this._listeners.voter_id;
@@ -347,16 +403,32 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		}
 		this.webSync();
 	};
-	proto.getVoterID = function() {
-		return this._voter_id;
+	*/
+	proto.isLoggedIn = function() {
+		var ref = this.getFirebaseRef();
+		return !!ref;
 	};
+	proto.requestLogin = function(callback, thisArg) {
+		this._firebaseRef.authWithOAuthPopup("google", $.proxy(function(error, authData) {
+			if(callback) {
+				callback.apply(thisArg||this, arguments);
+			}
+		}, this));
+	};
+	//proto.getVoterID = function() {
+		//return this._voter_id;
+	//};
 	proto.saveLocally = function() {
 		localStorage.setItem(USER_DATA_LOCAL_STORAGE, this.stringify());
+		/*
 		localStorage.setItem(USER_DATA_OTHER_STORAGE, JSON.stringify({
 			voter_id: this.getVoterID()
 		}));
+		*/
 	};
-	proto.canWebSync = function() { return this._canWebSync; };
+	proto.canWebSync = function() {
+		return this._canWebSync;
+	};
 	proto.getURL = function() { return this._url; };
 	proto.getConferenceID = function() { return this._conference_id; };
 
@@ -438,9 +510,9 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		return new UserDataRow(options.event_id, this, options);
 	};
 
-	proto.sqlToRow = function(row) { // accepts row from mysql db rv
+	proto.webDataToRow = function(row) { // accepts row from mysql db rv
 		var options = {};
-		$.each(row, function(property_name, value) {
+		each(row, function(value, property_name) {
 			if(property_name === "created_at" || endsWith(property_name, "updated_at")) {
 				if(value === "0000-00-00 00:00:00") {
 					options[property_name] = new Date(0);
@@ -450,12 +522,13 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 			} else if(property_name === "note") {
 				options[property_name] = value || "";
 			} else if(property_name === "vote" || property_name === "reading_list" || property_name === "schedule") {
-				options[property_name] = value === "1";
+				options[property_name] = value;
 			} else {
 				options[property_name] = value;
 			}
 		});
-		return new UserDataRow(options.event_id, this, options);
+		var event_id = options.event_id;
+		return new UserDataRow(event_id, this, options);
 	};
 	/*
 
@@ -488,6 +561,17 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 
 	proto.getAllWebData = function(callback, thisArg) {
 		if(this.canWebSync()) {
+			var ref = this.getFirebaseRef();
+			ref.once('value', function(snapshot) {
+				var rv = {};
+				snapshot.forEach($.proxy(function(childSnapshot) {
+					var key = childSnapshot.key();
+					rv[key] = this.webDataToRow(childSnapshot.val());
+				}, this));
+
+				callback.call(thisArg || this, false, rv);
+			}, this);
+			/*
 			$.ajax({
 				url: this.getURL(),
 				method: "POST",
@@ -515,6 +599,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 					callback.call(thisArg || this, errorThrown);
 				}
 			});
+			*/
 		}
 	};
 	proto.checkVoterID = function(id, callback, thisArg) {
@@ -552,12 +637,3 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		}
 	};
 }(UserData));
-
-function rest(args, index) {
-	return Array.prototype.slice.call(args, index);
-}
-
-function onGoogleSignin(googleUser) {
-	$("#googleSignIn").google_signin("loggedIn", googleUser);
-}
-

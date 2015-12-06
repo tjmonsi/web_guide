@@ -273,11 +273,10 @@ $.widget("confapp.presentation", {
 												checkBeforeActivating: $.proxy(function(val, onReady) {
 													if(val) {
 														if(presentation.getStartTimestamp() <= (new Date()).getTime()) {
-															var voterID = userData.getVoterID();
-															if(voterID) {
+															if(userData.isLoggedIn()) {
 																onReady(val);
 															} else {
-																requestVoterID(userData, function(voterID, isValid) {
+																userData.requestLogin(function(err, isValid) {
 																	if(isValid) {
 																		onReady(val);
 																	} else {
