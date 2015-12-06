@@ -265,7 +265,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		if(authInfo) {
 			var conference_id = sanitizeFirebaseKey(this.getConferenceID()),
 				user_id = authInfo.uid;
-			return rootRef.child(conference_id).child(user_id);
+			return rootRef.child('user_data').child(conference_id).child(user_id);
 		}
 	};
 
