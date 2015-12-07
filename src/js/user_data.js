@@ -160,6 +160,21 @@ var UserDataRow = function(event_id, userData, options) {
 		});
 		return obj;
 	};
+	proto.getWebObject = function() {
+		var rv = {
+			event_id: this.getEventID()
+		};
+		each(dataRowFields, function(field_name, index) {
+			var updated_at = this.getFieldUpdatedAt(field_name),
+				value = this.getField(field_name);
+
+			rv[field_name] = {
+				value: value,
+				updated_at: updated_at
+			};
+		}, this);
+		return rv;
+	};
 	proto.getEventID = function() {
 		return this._event_id;
 	};
@@ -182,7 +197,7 @@ var UserDataRow = function(event_id, userData, options) {
 						callback.call(thisArg || this);
 					}
 
-					return this.serialize();
+					return this.getWebObject();
 				}, this));
 			} else {
 				if(callback) {
