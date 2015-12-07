@@ -170,7 +170,7 @@ var UserDataRow = function(event_id, userData, options) {
 
 			rv[field_name] = {
 				value: value,
-				updated_at: updated_at
+				updated_at: updated_at.getTime()
 			};
 		}, this);
 		return rv;
