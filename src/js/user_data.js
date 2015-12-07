@@ -56,8 +56,13 @@ var UserDataRow = function(event_id, userData, options) {
 	};
 
 	proto._onValue = function(dataSnapshot) {
-		var remoteRow = this.getParent().webDataToRow(dataSnapshot.val());
-		this.mergeAndSave(remoteRow);
+		var dataVal = dataSnapshot.val();
+		if(dataVal) {
+			var remoteRow = this.getParent().webDataToRow(dataVal);
+			this.mergeAndSave(remoteRow);
+		} else {
+			this.pushToWeb();
+		}
 	};
 
 	proto._doSetField = function(field_name, field_value, updated_at) {
@@ -77,7 +82,7 @@ var UserDataRow = function(event_id, userData, options) {
 	};
 
 	proto.setField = function(field_name, field_value, callback, thisArg) {
-		var timestamp = new Date(),
+		var timestamp = new Date((new Date()).getTime()),
 			args = rest(arguments, 0);
 
 		args.splice(2, 0, timestamp); // insert a timestamp into the arguments
@@ -120,6 +125,7 @@ var UserDataRow = function(event_id, userData, options) {
 				this._doSetField(field_name, other_value, other_updated_at);
 			} else {
 				needToPushToWeb = true;
+				debugger;
 			}
 		}, this);
 
@@ -183,10 +189,37 @@ var UserDataRow = function(event_id, userData, options) {
 		var userData = this.getParent();
 
 		if(userData.canWebSync()) {
-			var event_id = this.getField("event_id");
+			var event_id = this.getEventID();
 
 			var firebaseRef = this.getFirebaseRef();
 			if(firebaseRef) {
+				var webObject = this.getWebObject();
+				firebaseRef.child('event_id').set(event_id);
+				each(dataRowFields, function(field_name) {
+					var fieldRef = firebaseRef.child(field_name);
+					fieldRef.set(webObject[field_name]);
+					/*
+
+					fieldRef.transaction($.proxy(function(currentData) {
+						if(currentData) {
+							var data = this.getParent().webDataToRow(currentData);
+							this.merge(data);
+						}
+
+						if(callback) {
+							callback.call(thisArg || this);
+						}
+
+						return this.getWebObject();
+					}, this), $.proxy(function(err, committed, dataSnapshot) {
+						if(!err) {
+							var data = this.getParent().webDataToRow(dataSnapshot);
+							this.merge(data);
+						}
+					}, this));
+					*/
+				}, this);
+				/*
 				firebaseRef.transaction($.proxy(function(currentData) {
 					if(currentData) {
 						var data = this.getParent().webDataToRow(currentData);
@@ -198,7 +231,13 @@ var UserDataRow = function(event_id, userData, options) {
 					}
 
 					return this.getWebObject();
+				}, this), $.proxy(function(err, committed, dataSnapshot) {
+					if(!err) {
+						var data = this.getParent().webDataToRow(dataSnapshot);
+						this.merge(data);
+					}
 				}, this));
+				*/
 			} else {
 				if(callback) {
 					callback.call(thisArg || this, new Error('No Firebase ref'));
@@ -434,6 +473,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		//return this._voter_id;
 	//};
 	proto.saveLocally = function() {
+		return;
 		localStorage.setItem(USER_DATA_LOCAL_STORAGE, this.stringify());
 		/*
 		localStorage.setItem(USER_DATA_OTHER_STORAGE, JSON.stringify({
@@ -526,15 +566,19 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	};
 
 	proto.webDataToRow = function(row) { // accepts row from mysql db rv
+		if(!row) debugger;
 		var options = {
 			event_id: row.event_id
 		};
 		each(dataRowFields, function(field) {
 			var obj = row[field];
-
-			options[field] = obj.value;
-			options[field+"_updated_at"] = new Date(obj.updated_at);
-
+			if(obj) {
+				options[field] = obj.value;
+				options[field+"_updated_at"] = new Date(obj.updated_at);
+			} else {
+				options[field] = getFieldDefault(field);
+				options[field+"_updated_at"] = new Date(0);
+			}
 		}, this);
 			/*
 		each(row, function(value, property_name) {
