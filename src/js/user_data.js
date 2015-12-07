@@ -526,8 +526,20 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	};
 
 	proto.webDataToRow = function(row) { // accepts row from mysql db rv
-		var options = {};
+		var options = {
+			event_id: row.event_id
+		};
+		each(dataRowFields, function(field) {
+			var obj = row[field];
+
+			options[field] = obj.value;
+			options[field+"_updated_at"] = new Date(obj.updated_at);
+
+		}, this);
+			/*
 		each(row, function(value, property_name) {
+
+
 			if(property_name === "created_at" || endsWith(property_name, "updated_at")) {
 				if(value === "0000-00-00 00:00:00") {
 					options[property_name] = new Date(0);
@@ -542,6 +554,7 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 				options[property_name] = value;
 			}
 		});
+			*/
 		var event_id = options.event_id;
 		return new UserDataRow(event_id, this, options);
 	};
