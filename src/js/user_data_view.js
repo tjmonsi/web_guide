@@ -65,7 +65,7 @@ $.widget("confapp.google_signin", {
 	},
 	_doSignout: function() {
 		var ref = this.option('firebaseRef');
-		ref.unauth()
+		ref.unauth();
 	}
 });
 

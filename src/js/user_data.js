@@ -125,7 +125,6 @@ var UserDataRow = function(event_id, userData, options) {
 				this._doSetField(field_name, other_value, other_updated_at);
 			} else {
 				needToPushToWeb = true;
-				debugger;
 			}
 		}, this);
 
@@ -135,7 +134,7 @@ var UserDataRow = function(event_id, userData, options) {
 		if(this.merge.apply(this, arguments)) {
 			this.pushToWeb();
 		}
-	}
+	};
 	proto.getParent = function() {
 		return this._userData;
 	};
@@ -326,7 +325,6 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	proto.getEventFirebaseRef = function(event_id) {
 		var userFirebaseRef = this.getFirebaseRef();
 		if(userFirebaseRef) {
-			if(!event_id) debugger;
 			return userFirebaseRef.child(event_id);
 		}
 	};
@@ -473,7 +471,6 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 		//return this._voter_id;
 	//};
 	proto.saveLocally = function() {
-		return;
 		localStorage.setItem(USER_DATA_LOCAL_STORAGE, this.stringify());
 		/*
 		localStorage.setItem(USER_DATA_OTHER_STORAGE, JSON.stringify({
@@ -566,7 +563,6 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	};
 
 	proto.webDataToRow = function(row) { // accepts row from mysql db rv
-		if(!row) debugger;
 		var options = {
 			event_id: row.event_id
 		};
