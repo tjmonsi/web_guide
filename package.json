@@ -19,11 +19,12 @@
 		"node-sass-middleware": "~0.9"
 	},
 	"engines": {
-		"node": "~5.0",
+		"node": "~5",
 		"npm": "~3.3"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/confapp/web_guide.git"
-	}
+	},
+	"license": "MIT"
 }

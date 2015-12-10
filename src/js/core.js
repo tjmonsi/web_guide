@@ -58,9 +58,7 @@ $.widget("confapp.caWebProgram", {
 				this._user_data.saveLocally();
 			}, this));
 		}
-		//setInterval($.proxy(function() {
-			//this._user_data.webSync();
-		//}, this), 5000);
+
 		this._updateDays();
 
 		var selectedEvent = this.option('selectedEvent');
