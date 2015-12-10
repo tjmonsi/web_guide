@@ -13,8 +13,6 @@ function getUrlParameter(sParam) {
     }
 }
 
-var paper = getUrlParameter("paper");
-
 // parseUri 1.2.2
 // (c) Steven Levithan <stevenlevithan.com>
 // MIT License

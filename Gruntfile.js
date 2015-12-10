@@ -23,6 +23,8 @@ module.exports = function(grunt) {
 						"person.js", "location.js", "user_data.js", "user_data_view.js", "search.js"
 					])),
 		enclosed_src_files = ([path.join(SRC, 'vendor', 'jquery-ui.js'),
+								path.join(SRC, 'vendor', 'moment-with-locales.js'),
+								path.join(SRC, 'vendor', 'firebase.js'),
 								path.join(SRC, 'js', 'header.js')]).concat(src_files, path.join(SRC, 'js', 'footer.js'));
 
 	grunt.initConfig({

@@ -1,5 +1,6 @@
 $.widget("confapp.caWebProgram", {
 	options: {
+		conference_id: false,
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
