@@ -198,7 +198,7 @@ $.widget("confapp.slotBubble", {
 
 		$.each(annotations, $.proxy(function(i, annotation) {
 			var icon = annotation.getIcon();
-			$("<img />").attr("src", this.option('annotationImageDirectory')+icon)
+			$("<img />").attr("src", annotation.getIconURL() || (this.option('annotationImageDirectory')+icon))
 						.css({
 							height: "20px",
 							position: "absolute",
@@ -258,7 +258,7 @@ $.widget("confapp.slotBubble", {
 													.addClass('annotation');
 
 			var icon = annotation.getIcon();
-			$("<img />").attr("src", this.option('annotationImageDirectory')+icon)
+			$("<img />").attr("src", annotation.getIconURL() || this.option('annotationImageDirectory')+icon)
 						.css({
 							height: "16px",
 							position: "relative",

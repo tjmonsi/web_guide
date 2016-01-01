@@ -132,7 +132,7 @@ $.widget("confapp.presentation", {
 													.addClass('annotation');
 
 			var icon = annotation.getIcon();
-			$("<img />").attr("src", this.option("annotationImageDirectory")+icon)
+			$("<img />").attr("src", annotation.getIconURL() || (this.option("annotationImageDirectory")+icon))
 						.css({
 							height: "18px",
 							position: "relative",

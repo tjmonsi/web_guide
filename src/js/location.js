@@ -57,7 +57,7 @@ $.widget("confapp.location", {
 												.css({
 													position: 'relative'
 												});
-					var imgElement = $('<img />')	.attr('src', this.option('mapImageDirectory') + mapFile)
+					var imgElement = $('<img />')	.attr('src', location.getMapURL() || (this.option('mapImageDirectory') + mapFile))
 													.addClass('map')
 													.css({
 														width: "100%"

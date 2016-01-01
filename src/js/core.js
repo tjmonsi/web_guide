@@ -41,7 +41,7 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_loadDatabase: function(url) {
-		this._database = confApp.loadDatabase(url, this._onDatabaseLoaded, this);
+		this._database = confApp.loadFirebaseDatabase(this.option('conference_id'), this._onDatabaseLoaded, this);
 	},
 
 	_onDatabaseLoaded: function() {
