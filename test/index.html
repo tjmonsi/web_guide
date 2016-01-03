@@ -31,11 +31,8 @@
 	<script type="text/javascript">
 		$(function() {
 			$('.container').caWebProgram({
-				conference_id: 'testcon',
-				databaseURL: "sample_conference/database/db_001.json",
-				imageDirectory: "../build/images",
-				mapImageDirectory: "sample_conference/maps/",
-				annotationImageDirectory: "sample_conference/annotations/"
+				conference_id: getUrlParameter('conference'),
+				imageDirectory: "../build/images"
 			});
 		});
 	</script>
