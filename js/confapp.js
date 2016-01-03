@@ -18300,6 +18300,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 (function(root) {
 	var MINUTE_IN_MS = 60*1000,
 		DAY_IN_MS = 24*60*MINUTE_IN_MS,
+		SEQUENCE_START_INDEX = 1,
 		EVENT_TABLE = "event",
 		PERSON_TABLE = "person",
 		LOCATION_TABLE = "location",
@@ -18319,6 +18320,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 				getID: "_id",
 				getDescription: "description",
 				getIcon: "icon",
+				getIconURL: "icon_url",
 				getName: "name",
 				getType: "type",
 				getSequence: "sequence"
@@ -18486,6 +18488,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 				getDescription: "description",
 				getSequence: "sequence",
 				getMapName: "map_name",
+				getMapURL: "map_url",
 				getMapFile: "map_file"
 			};
 		each(optionGetters, function(prop_name, fn_name) {
@@ -18504,7 +18507,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 		};
 	}(ConfAppLocation));
 
-	var ConfAppDB = function(db_url) {
+	var ConfAppDB = function(options) {
 		this._loaded = false;
 		this._loaded_callbacks = [];
 
@@ -18519,17 +18522,19 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 
 		this._firstNSearchResults = {};
 
-		xhr('GET', db_url, false, function(response) {
-			this._onDataFetched(JSON.parse(response));
-		}, function(err) {
-			incJS(db_url+"p", function() {
-				if(root.hasOwnProperty(JSONP_DATA_VAR_NAME)) {
-					this._onDataFetched(root[JSONP_DATA_VAR_NAME]);
-				} else {
-					throw new Error(err);
-				}
+		if(options.url) {
+			xhr('GET', options.url, false, function(response) {
+				this._onDataFetched(JSON.parse(response));
+			}, function(err) {
+				incJS(options.url+"p", function() {
+					if(root.hasOwnProperty(JSONP_DATA_VAR_NAME)) {
+						this._onDataFetched(root[JSONP_DATA_VAR_NAME]);
+					} else {
+						throw new Error(err);
+					}
+				}, this);
 			}, this);
-		}, this);
+		}
 	};
 
 	(function(My) {
@@ -18818,7 +18823,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 
 			each(ep_rows, function(row) {
 				if(row[ep_headers.event_fk] === event_fk) {
-					person_fks[row[ep_headers.sequence]] = row[ep_headers.person_fk];
+					person_fks[row[ep_headers.sequence]-SEQUENCE_START_INDEX] = row[ep_headers.person_fk];
 				}
 			});
 
@@ -18881,7 +18886,7 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 				if(row[ee_headers.parent_fk] === parent_fk) {
 					var sequence = row[ee_headers.sequence],
 						child_fk = row[ee_headers.child_fk];
-					child_fks[sequence] = child_fk;
+					child_fks[sequence-SEQUENCE_START_INDEX] = child_fk;
 					count++;
 					if(limit && count > limit) {
 						return DO_BREAK;
@@ -19044,7 +19049,26 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 		Person: ConfAppPerson,
 		Location: ConfAppLocation,
 		loadDatabase: function(db_url, callback, thisArg) {
-			var database = new ConfAppDB(db_url);
+			var database = new ConfAppDB({
+				url: db_url
+			});
+			if(callback) {
+				database.onLoad(callback, thisArg);
+			}
+			return database;
+		},
+		loadFirebaseDatabase: function(conference_id, callback, thisArg) {
+			var database = new ConfAppDB({}),
+				ref = new Firebase('https://confapp-data-sync.firebaseio.com/')
+							.child('conferences')
+							.child(conference_id)
+							.child('currentJSONDatabase');
+
+			ref.once('value', function(dataSnapshot) {
+				var jsonData = dataSnapshot.val();
+				database._onDataFetched(jsonData);
+			});
+
 			if(callback) {
 				database.onLoad(callback, thisArg);
 			}
