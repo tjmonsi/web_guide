@@ -12,6 +12,7 @@ function getUrlParameter(sParam) {
         }
     }
 }
+window.getUrlParameter = getUrlParameter;
 
 // parseUri 1.2.2
 // (c) Steven Levithan <stevenlevithan.com>
