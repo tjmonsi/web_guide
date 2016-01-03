@@ -20,7 +20,8 @@
       background-color: #F8F8F8; }
   .program_header .ca_search {
     background-color: white;
-    padding: 10px; }
+    padding-top: 10px;
+    padding-bottom: 10px; }
     .program_header .ca_search label {
       margin-right: 5px;
       float: left; }

@@ -18,7 +18,7 @@ $highlight_color: #1EAEDB;
 	padding-left: $session_padding;
 	clear: both;
 	overflow: auto;
-	
+
 	.ca-button {
 		float: right;
 		cursor: pointer;
@@ -34,7 +34,8 @@ $highlight_color: #1EAEDB;
 
 	.ca_search {
 		background-color: white;
-		padding: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
 		label {
 			margin-right: 5px;
 			float: left;

@@ -8,21 +8,21 @@ $.widget("confapp.caWebProgram", {
 		annotationImageDirectory: 'images/annotations',
 		mapImageDirectory: 'images/maps',
 		imageDirectory: 'images',
-		conferenceLogo: false,
+		conferenceLogo: true,
 		firebaseRef: new Firebase("https://confapp-data-sync.firebaseio.com")
 	},
 
 	_create: function() {
-		this._loadDatabase(this.option("databaseURL"));
-
 		this.loadingElement = $("<div />")	.appendTo(this.element)
 											.text("Loading...");
 
-		this.logoElement = $('<span />').appendTo(this.headerElement);
 
 		this.headerElement = $('<div />').appendTo(this.element)
 											.addClass('program_header');
 
+		this.logoElement = $('<div />').appendTo(this.headerElement);
+
+		this._loadDatabase(this.option("databaseURL"));
 		this.signinElement = $("<span />")	.appendTo(this.headerElement)
 											.on("googleLogin", $.proxy(this._onGoogleLogin, this))
 											.google_signin({
@@ -53,6 +53,17 @@ $.widget("confapp.caWebProgram", {
 		this.loadingElement.remove();
 
 		this._user_data = new UserData(this.option('firebaseRef'), database.getID(), conference_info.data_sync);
+		$('<div />').text(conference_info.description).appendTo(this.logoElement);
+		if(conference_info.icon_url && this.option('conferenceLogo')) {
+			this.logo = $('<img />').prependTo(this.logoElement)
+									.attr({
+										src: conference_info.icon_url
+									})
+									.css({
+										'max-width': '300px',
+										'max-height': '100px'
+									});
+		}
 
 		if(this.option("saveOnUnload")) {
 			$(window).on("beforeunload", $.proxy(function() {
