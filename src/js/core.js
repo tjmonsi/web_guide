@@ -1,6 +1,6 @@
 $.widget("confapp.caWebProgram", {
 	options: {
-		conference_id: false,
+		conferenceID: false,
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
@@ -41,7 +41,13 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_loadDatabase: function(url) {
-		this._database = confApp.loadFirebaseDatabase(this.option('conference_id'), this._onDatabaseLoaded, this);
+		if(this.option('conferenceID')) {
+			this._database = confApp.loadFirebaseDatabase(this.option('conferenceID'), this._onDatabaseLoaded, this);
+		} else if(this.option('databaseURL')) {
+			this._database = confApp.loadDatabase(this.option('databaseURL'), this._onDatabaseLoaded, this);
+		} else {
+			throw new Error('Neither "conferenceID" nor "databaseURL" parameters were specified.');
+		}
 	},
 
 	_onDatabaseLoaded: function() {

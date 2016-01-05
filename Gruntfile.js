@@ -133,6 +133,18 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		compress: {
+			main: {
+				options: {
+					mode: 'zip',
+					archive: 'confapp_web_guide.zip'
+				},
+				expand: true,
+				cwd: 'build',
+				src: ['**'],
+				dest: ''
+			}
+		}
 	});
 
 	grunt.registerTask('usetheforce_on', 'force the force option on if needed',
@@ -155,6 +167,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-qunit');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
@@ -162,4 +175,5 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask('default', ['clean', 'jshint:source', 'sass', 'concat', 'uglify:production', 'cssmin', 'copy']);
+	grunt.registerTask('package', ['default', 'compress']);
 };

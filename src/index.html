@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="css/confapp.min.css" />
-		<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript" src="js/confapp.min.js"></script>
 	</head>
 	<body>
@@ -12,7 +12,8 @@
 	<script type="text/javascript">
 		$(function() {
 			$('.container').caWebProgram({
-				conference_id: getUrlParameter('conference')
+				databaseURL: false,
+				conferenceID: getUrlParameter('conference')
 			});
 		});
 	</script>
