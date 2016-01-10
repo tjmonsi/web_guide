@@ -148,6 +148,15 @@ function sanitizeFirebaseKey(key) {
 	return key	.replace(/\./g, '')
 				.replace(/\$/g, '');
 }
+
+function extend(rootObj) {
+    each(rest(arguments, 1), function(obj) {
+        each(obj, function(value, key) {
+            rootObj[key] = value;
+        });
+    });
+    return rootObj;
+}
 /*
 
 function preg_quote(str) {

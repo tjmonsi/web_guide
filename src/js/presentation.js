@@ -10,7 +10,10 @@ $.widget("confapp.presentation", {
 		requireDescriptionExpansion: false,
 		imageDirectory: false,
 		annotationImageDirectory: false,
-		mapImageDirectory: false
+		mapImageDirectory: false,
+		getAttachmentText: function() {
+			return caWebOptions.getAttachmentText.apply(this, arguments);
+		}
 	},
 
 	_create: function() {
@@ -363,12 +366,9 @@ $.widget("confapp.presentation", {
 		}
 
 		if(otherAttachments.length > 0) {
-			$.each(otherAttachments, $.proxy(function(i, attachment) {
+			each(otherAttachments, function(attachment, i) {
 				var attachmentURL = attachment.getURL(),
-					attachmentType = attachment.getType(),
-					parsedURL = parseUri(attachmentURL);
-
-				var text = attachmentType + ' (' + parsedURL.host + ')';
+					text = this.option('getAttachmentText')(attachment);
 
 				var attachmentLink = $('<a />').text(text)
 												.attr({
@@ -376,7 +376,7 @@ $.widget("confapp.presentation", {
 													target: '_blank'
 												})
 												.appendTo(attachmentsCol);
-			}));
+			}, this);
 		}
 
 		var abstractContainer = $("<div />").prependTo(this.descriptionElement)

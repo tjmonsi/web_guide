@@ -13,6 +13,7 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_create: function() {
+		extend(caWebOptions, this.option());
 		this.loadingElement = $("<div />")	.appendTo(this.element)
 											.text("Loading...");
 

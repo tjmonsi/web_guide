@@ -17,7 +17,7 @@ function mapJoin() {
 
 module.exports = function(grunt) {
 	var src_files = mapJoin(DB_QUERY, ['confapp_db_query.js', 'fetch_latest_db.js']).concat(mapJoin(SRC, 'js', [
-						"utils.js", "core.js", "day.js",
+						"utils.js", "options.js", "core.js", "day.js",
 						"person.js", "slot_bubbles.js",
 						"time_slot.js", "session.js", "presentation.js",
 						"person.js", "location.js", "user_data.js", "user_data_view.js", "search.js"
