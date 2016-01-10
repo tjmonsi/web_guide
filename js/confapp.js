@@ -19607,6 +19607,15 @@ function sanitizeFirebaseKey(key) {
 	return key	.replace(/\./g, '')
 				.replace(/\$/g, '');
 }
+
+function extend(rootObj) {
+    each(rest(arguments, 1), function(obj) {
+        each(obj, function(value, key) {
+            rootObj[key] = value;
+        });
+    });
+    return rootObj;
+}
 /*
 
 function preg_quote(str) {
@@ -19639,6 +19648,15 @@ function addHighlights(data, search, humanVarName, highlightClass) {
 
 */
 
+var caWebOptions = {
+	getAttachmentText: function(attachment) {
+		var attachmentURL = attachment.getURL(),
+			attachmentType = attachment.getType(),
+			parsedURL = parseUri(attachmentURL);
+		return attachmentType + ' (' + parsedURL.host + ')';
+	}
+};
+
 $.widget("confapp.caWebProgram", {
 	options: {
 		conferenceID: false,
@@ -19654,6 +19672,7 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_create: function() {
+		extend(caWebOptions, this.option());
 		this.loadingElement = $("<div />")	.appendTo(this.element)
 											.text("Loading...");
 
@@ -20983,7 +21002,10 @@ $.widget("confapp.presentation", {
 		requireDescriptionExpansion: false,
 		imageDirectory: false,
 		annotationImageDirectory: false,
-		mapImageDirectory: false
+		mapImageDirectory: false,
+		getAttachmentText: function() {
+			return caWebOptions.getAttachmentText.apply(this, arguments);
+		}
 	},
 
 	_create: function() {
@@ -21336,12 +21358,9 @@ $.widget("confapp.presentation", {
 		}
 
 		if(otherAttachments.length > 0) {
-			$.each(otherAttachments, $.proxy(function(i, attachment) {
+			each(otherAttachments, function(attachment, i) {
 				var attachmentURL = attachment.getURL(),
-					attachmentType = attachment.getType(),
-					parsedURL = parseUri(attachmentURL);
-
-				var text = attachmentType + ' (' + parsedURL.host + ')';
+					text = this.option('getAttachmentText')(attachment);
 
 				var attachmentLink = $('<a />').text(text)
 												.attr({
@@ -21349,7 +21368,7 @@ $.widget("confapp.presentation", {
 													target: '_blank'
 												})
 												.appendTo(attachmentsCol);
-			}));
+			}, this);
 		}
 
 		var abstractContainer = $("<div />").prependTo(this.descriptionElement)
