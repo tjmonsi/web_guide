@@ -139,7 +139,7 @@ $.widget("confapp.caDay", {
 				});
 			});
 
-			slots.sort(function(a, b) { return a.start_timestamp - b.start_timestamp; });
+			slots.sort(function(a, b) { return a.startTimestamp - b.startTimestamp; });
 		} else {
 			events = database.getAllSessions();
 			$.each(events, function(index, e) {

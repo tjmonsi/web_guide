@@ -4,7 +4,6 @@ $.widget("confapp.caWebProgram", {
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
-		showLogo: false,
 		annotationImageDirectory: 'images/annotations',
 		mapImageDirectory: 'images/maps',
 		imageDirectory: 'images',
@@ -115,8 +114,6 @@ $.widget("confapp.caWebProgram", {
 
 		this._clearDays();
 
-		if(this.option('showLogo')) {
-		}
 		/*
 
 		this.voterIDElement = $('<span />').appendTo(this.headerElement)
