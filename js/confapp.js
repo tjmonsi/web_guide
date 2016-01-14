@@ -19663,7 +19663,6 @@ $.widget("confapp.caWebProgram", {
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
-		showLogo: false,
 		annotationImageDirectory: 'images/annotations',
 		mapImageDirectory: 'images/maps',
 		imageDirectory: 'images',
@@ -19774,8 +19773,6 @@ $.widget("confapp.caWebProgram", {
 
 		this._clearDays();
 
-		if(this.option('showLogo')) {
-		}
 		/*
 
 		this.voterIDElement = $('<span />').appendTo(this.headerElement)
@@ -19979,7 +19976,7 @@ $.widget("confapp.caDay", {
 				});
 			});
 
-			slots.sort(function(a, b) { return a.start_timestamp - b.start_timestamp; });
+			slots.sort(function(a, b) { return a.startTimestamp - b.startTimestamp; });
 		} else {
 			events = database.getAllSessions();
 			$.each(events, function(index, e) {
