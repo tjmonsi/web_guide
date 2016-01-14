@@ -18956,7 +18956,14 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 				sessions = this.filterSessions(time_filter_fn);
 
 			sessions.sort(function(a, b) {
-				return a.getStartTimestamp() - b.getStartTimestamp();
+				var aStartTimestamp = a.getStartTimestamp(),
+					bStartTimestamp = b.getStartTimestamp();
+
+				if(aStartTimestamp === bStartTimestamp) {
+					return a.getEndTimestamp() - b.getEndTimestamp();
+				} else {
+					return aStartTimestamp - bStartTimestamp;
+				}
 			});
 
 			return sessions;
@@ -19976,7 +19983,13 @@ $.widget("confapp.caDay", {
 				});
 			});
 
-			slots.sort(function(a, b) { return a.startTimestamp - b.startTimestamp; });
+			slots.sort(function(a, b) {
+				if(a.startTimestamp === b.startTimestamp) {
+					return a.endTimestamp - b.endTimestamp;
+				} else {
+					return a.startTimestamp - b.startTimestamp;
+				}
+			});
 		} else {
 			events = database.getAllSessions();
 			$.each(events, function(index, e) {
