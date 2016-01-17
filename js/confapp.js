@@ -18956,7 +18956,14 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 				sessions = this.filterSessions(time_filter_fn);
 
 			sessions.sort(function(a, b) {
-				return a.getStartTimestamp() - b.getStartTimestamp();
+				var aStartTimestamp = a.getStartTimestamp(),
+					bStartTimestamp = b.getStartTimestamp();
+
+				if(aStartTimestamp === bStartTimestamp) {
+					return a.getEndTimestamp() - b.getEndTimestamp();
+				} else {
+					return aStartTimestamp - bStartTimestamp;
+				}
 			});
 
 			return sessions;
@@ -19607,6 +19614,15 @@ function sanitizeFirebaseKey(key) {
 	return key	.replace(/\./g, '')
 				.replace(/\$/g, '');
 }
+
+function extend(rootObj) {
+    each(rest(arguments, 1), function(obj) {
+        each(obj, function(value, key) {
+            rootObj[key] = value;
+        });
+    });
+    return rootObj;
+}
 /*
 
 function preg_quote(str) {
@@ -19639,13 +19655,21 @@ function addHighlights(data, search, humanVarName, highlightClass) {
 
 */
 
+var caWebOptions = {
+	getAttachmentText: function(attachment) {
+		var attachmentURL = attachment.getURL(),
+			attachmentType = attachment.getType(),
+			parsedURL = parseUri(attachmentURL);
+		return attachmentType + ' (' + parsedURL.host + ')';
+	}
+};
+
 $.widget("confapp.caWebProgram", {
 	options: {
-		conference_id: false,
+		conferenceID: false,
 		databaseURL: false,
 		selectedEvent: window.location.hash,
 		saveOnUnload: true,
-		showLogo: false,
 		annotationImageDirectory: 'images/annotations',
 		mapImageDirectory: 'images/maps',
 		imageDirectory: 'images',
@@ -19654,6 +19678,7 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_create: function() {
+		extend(caWebOptions, this.option());
 		this.loadingElement = $("<div />")	.appendTo(this.element)
 											.text("Loading...");
 
@@ -19682,7 +19707,13 @@ $.widget("confapp.caWebProgram", {
 	},
 
 	_loadDatabase: function(url) {
-		this._database = confApp.loadFirebaseDatabase(this.option('conference_id'), this._onDatabaseLoaded, this);
+		if(this.option('conferenceID')) {
+			this._database = confApp.loadFirebaseDatabase(this.option('conferenceID'), this._onDatabaseLoaded, this);
+		} else if(this.option('databaseURL')) {
+			this._database = confApp.loadDatabase(this.option('databaseURL'), this._onDatabaseLoaded, this);
+		} else {
+			throw new Error('Neither "conferenceID" nor "databaseURL" parameters were specified.');
+		}
 	},
 
 	_onDatabaseLoaded: function() {
@@ -19749,8 +19780,6 @@ $.widget("confapp.caWebProgram", {
 
 		this._clearDays();
 
-		if(this.option('showLogo')) {
-		}
 		/*
 
 		this.voterIDElement = $('<span />').appendTo(this.headerElement)
@@ -19944,7 +19973,13 @@ $.widget("confapp.caDay", {
 					end_timestamp = firstEvent.getEndTimestamp(),
 					utc_offset = firstEvent.getUTCOffset();
 
-				events.sort(function(a, b) { return a.location_fk - b.location_fk; });
+				events.sort(function(a, b) {
+					var aLocation = a.getLocation(),
+						bLocation = b.getLocation(),
+						aLocationSeq = aLocation ? aLocation.getSequence() : -1,
+						bLocationSeq = bLocation ? bLocation.getSequence() : -1;
+					return aLocationSeq - bLocationSeq;
+				});
 				slots.push({
 					numSessions: events.length,
 					sessions: events,
@@ -19954,7 +19989,13 @@ $.widget("confapp.caDay", {
 				});
 			});
 
-			slots.sort(function(a, b) { return a.start_timestamp - b.start_timestamp; });
+			slots.sort(function(a, b) {
+				if(a.startTimestamp === b.startTimestamp) {
+					return a.endTimestamp - b.endTimestamp;
+				} else {
+					return a.startTimestamp - b.startTimestamp;
+				}
+			});
 		} else {
 			events = database.getAllSessions();
 			$.each(events, function(index, e) {
@@ -20977,7 +21018,10 @@ $.widget("confapp.presentation", {
 		requireDescriptionExpansion: false,
 		imageDirectory: false,
 		annotationImageDirectory: false,
-		mapImageDirectory: false
+		mapImageDirectory: false,
+		getAttachmentText: function() {
+			return caWebOptions.getAttachmentText.apply(this, arguments);
+		}
 	},
 
 	_create: function() {
@@ -21330,12 +21374,9 @@ $.widget("confapp.presentation", {
 		}
 
 		if(otherAttachments.length > 0) {
-			$.each(otherAttachments, $.proxy(function(i, attachment) {
+			each(otherAttachments, function(attachment, i) {
 				var attachmentURL = attachment.getURL(),
-					attachmentType = attachment.getType(),
-					parsedURL = parseUri(attachmentURL);
-
-				var text = attachmentType + ' (' + parsedURL.host + ')';
+					text = this.option('getAttachmentText')(attachment);
 
 				var attachmentLink = $('<a />').text(text)
 												.attr({
@@ -21343,7 +21384,7 @@ $.widget("confapp.presentation", {
 													target: '_blank'
 												})
 												.appendTo(attachmentsCol);
-			}));
+			}, this);
 		}
 
 		var abstractContainer = $("<div />").prependTo(this.descriptionElement)
