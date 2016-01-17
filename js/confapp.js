@@ -19973,13 +19973,7 @@ $.widget("confapp.caDay", {
 					end_timestamp = firstEvent.getEndTimestamp(),
 					utc_offset = firstEvent.getUTCOffset();
 
-				events.sort(function(a, b) {
-					var aLocation = a.getLocation(),
-						bLocation = b.getLocation(),
-						aLocationSeq = aLocation ? aLocation.getSequence() : -1,
-						bLocationSeq = bLocation ? bLocation.getSequence() : -1;
-					return aLocationSeq - bLocationSeq;
-				});
+				events.sort(function(a, b) { return a.location_fk - b.location_fk; });
 				slots.push({
 					numSessions: events.length,
 					sessions: events,
@@ -21801,12 +21795,16 @@ var UserData = function(firebaseRef, conference_id, canWebSync, callback, thisAr
 	var proto = My.prototype;
 
 	var merge_rows = function(row, event_id) {
-		var existing_row = this.rows[event_id];
-		if(existing_row) {
-			existing_row.mergeAndSave(row);
-		} else {
-			this.rows[event_id] = row;
-			row.setFirebaseRef(this.getEventFirebaseRef(row.getEventID()));
+		try {
+			var existing_row = this.rows[event_id];
+			if(existing_row) {
+				existing_row.mergeAndSave(row);
+			} else {
+				this.rows[event_id] = row;
+				row.setFirebaseRef(this.getEventFirebaseRef(row.getEventID()));
+			}
+		} catch(e) {
+			console.error('Problem with event ' + event_id + ': ' + e);
 		}
 	};
 
