@@ -19973,7 +19973,13 @@ $.widget("confapp.caDay", {
 					end_timestamp = firstEvent.getEndTimestamp(),
 					utc_offset = firstEvent.getUTCOffset();
 
-				events.sort(function(a, b) { return a.location_fk - b.location_fk; });
+				events.sort(function(a, b) {
+					var aLocation = a.getLocation(),
+						bLocation = b.getLocation(),
+						aLocationSeq = aLocation ? aLocation.getSequence() : -1,
+						bLocationSeq = bLocation ? bLocation.getSequence() : -1;
+					return aLocationSeq - bLocationSeq;
+				});
 				slots.push({
 					numSessions: events.length,
 					sessions: events,
