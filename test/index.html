@@ -6,7 +6,14 @@
 		<link rel="stylesheet" type="text/css" href="../src/vendor/Skeleton-2.0.4/css/skeleton.css" />
 	</head>
 	<body>
-		<div class='container'></div>
+		<div class='container' id='program'></div>
+		<div class='footer container'>
+			<div class='row'>
+				<div class="twelve columns">
+					Program Guide by Electronic Conference Services | <a href='https://github.com/confapp/web_guide' target='_blank'>Fork us on GitHub</a>
+				</div>
+			</div>
+		</div>
 	</body>
 
 	<script type="text/javascript" src="../src/vendor/jquery-2.1.4.js"></script>
@@ -32,7 +39,7 @@
 	<script type="text/javascript" src="../src/js/search.js"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('.container').caWebProgram({
+			$('#program').caWebProgram({
 				conferenceID: getUrlParameter('conference'),
 				imageDirectory: "../build/images"
 			});
