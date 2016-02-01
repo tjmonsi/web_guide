@@ -19258,12 +19258,11 @@ U.prototype.Ve=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);ng
 		},
 		loadFirebaseDatabase: function(conference_id, callback, thisArg) {
 			var database = new ConfAppDB({}),
-				conferenceRef = new Firebase('https://confapp-data-sync.firebaseio.com/')
-							.child('conferences')
-							.child(conference_id);
+				ref = new Firebase('https://confapp-data-sync.firebaseio.com/'),
+				conferenceRef = ref.child('deployed_databases').child(conference_id);
 
 			function doGetCurrentJSONDB(dbVersion) {
-				conferenceRef.child('currentJSONDatabase').once('value', function(dataSnapshot) {
+				conferenceRef.child('database').once('value', function(dataSnapshot) {
 					var jsonData = dataSnapshot.val();
 					database._onDataFetched(jsonData);
 
