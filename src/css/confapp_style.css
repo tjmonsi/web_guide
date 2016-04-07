@@ -128,6 +128,8 @@
       .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded {
         border-bottom: 1px solid #CCC;
         padding: 8px; }
+        .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded p {
+          white-space: pre-line; }
         .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded.notSearchResult {
           opacity: 0.3; }
         .conference_days .conference_day .sessions .time_slot .sessions .expanded_session .presentation.expanded.searchResult {
