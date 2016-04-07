@@ -193,6 +193,9 @@ $highlight_color: #1EAEDB;
 							}
 						}
 						.presentation.expanded {
+							.p {
+								white-space: pre-line;
+							}
 							&.notSearchResult {
 								opacity: 0.3;
 							}
