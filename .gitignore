@@ -1,4 +1,5 @@
 build/
+.sass-cache
 .DS_Store
 node_modules
 confapp_web_guide.zip
