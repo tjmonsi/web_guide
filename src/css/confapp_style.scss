@@ -383,6 +383,7 @@ $tooltip_width: 350px;
     opacity: 1;
 	width: $tooltip_width;
 	border-radius: 3px;
+	z-index: 999;
 
 	.ui-tooltip-content {
 	    position: relative;

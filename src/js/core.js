@@ -59,7 +59,6 @@ $.widget("confapp.caWebProgram", {
 		this.loadingElement.remove();
 
 		this._user_data = new UserData(this.option('firebaseRef'), database.getID(), conference_info.data_sync);
-		$('<div />').text(conference_info.description).appendTo(this.logoElement);
 		if(conference_info.icon_url && this.option('conferenceLogo')) {
 			this.logo = $('<img />').prependTo(this.logoElement)
 									.attr({
@@ -69,6 +68,7 @@ $.widget("confapp.caWebProgram", {
 										'max-width': '300px',
 										'max-height': '100px'
 									});
+			$('<div />').text(conference_info.description).appendTo(this.logoElement);
 		}
 
 		if(this.option("saveOnUnload")) {
